@@ -4,11 +4,13 @@ import Login from '../views/auth/Login.vue'
 import Register from '../views/auth/Register.vue'
 import NuevoCupon from '../views/NuevoCupon.vue'
 import Cupon from '../views/Cupon.vue'
+import store from '../store/index.js'
+
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/iniciar-sesion',
+    path: '/',
     name: 'Login',
     component: Login,
     meta: {
@@ -51,6 +53,12 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if ((to.name != 'Login' || to.name == 'Register') && !Object.keys(store.state.auth).length) next({ name: 'Login' })
+  if ((to.name == 'Login' || to.name == 'Register') && Object.keys(store.state.auth).length) next(false)
+  else next()
 })
 
 export default router

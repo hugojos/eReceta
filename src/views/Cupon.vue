@@ -1,5 +1,5 @@
 <template>
-    <div class="h-100 row justify-content-center align-items-center">
+    <div class="h-100 row justify-content-center align-items-center mt-2">
         <div class="col-12" id="my_pdf_viewer">
             <div class="" id="canvas_container">
                 <canvas class="" id="pdf_renderer"></canvas>
@@ -34,14 +34,14 @@ export default {
         }
     },
     mounted(){
-        pdfjsLib.getDocument('eReceta.pdf').then((pdf) => {
+        pdfjsLib.getDocument({data: this.$store.state.dataPDF}).then((pdf) => {
             this.state.pdf = pdf;
             this.render()
         });
     }
 }
 </script>
-<style>
+<style scoped>
     #canvas_container {
         width: 100%;
         height: 100%;
@@ -49,5 +49,8 @@ export default {
         background: #333;
         text-align: center;
         border: solid 3px;
+    }
+    .container {
+        margin: 0!important;
     }
 </style>
