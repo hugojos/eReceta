@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     dataPDF: [],
-    auth: {}
+    auth: localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : {}
   },
   mutations: {
     mutateDataPDF(state, value) {

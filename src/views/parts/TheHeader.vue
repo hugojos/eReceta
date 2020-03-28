@@ -1,10 +1,19 @@
 <template>
-    <header class="text-white d-flex align-items-center justify-content-center position-relative">
-        <font-awesome-icon @click="$router.back()" v-if="$route.name == 'Cupon'"
-        icon="arrow-circle-left" class="h5 m-0 position-absolute" title="Atras" style="left: 20px"/>
-        <h1 class="h5 m-0">{{this.$route.meta.title}}</h1>
-        <font-awesome-icon @click="logout()" v-if="$route.name != 'Login' && $route.name != 'Register'"
-        icon="sign-out-alt" class="h4 m-0 position-absolute" title="Cerrar sesión" style="right: 20px"/>
+    <header class="py-1 bg-purpura text-white d-flex align-items-center justify-content-center position-relative">
+        <div class="container">
+            <div class="row">
+                <div class="col-2">
+                    <img src="img/1.jpg" style="width:23px" alt=""> 
+                </div> 
+                <div class="col-8">
+                    <h1 class="h5 m-0">{{this.$route.meta.title}}</h1>
+                </div>
+                <div class="col-2 d-flex justify-content-end">
+                    <font-awesome-icon @click="logout()" v-if="$route.name != 'Login' && $route.name != 'Register'"
+                    icon="sign-out-alt" class="h4 m-0 float-right pointer" title="Cerrar sesión"/>
+                </div>
+            </div>
+        </div>
     </header>
 </template>
 <script>
@@ -14,6 +23,7 @@ export default {
         ...mapActions(['updateAuth']),
         logout(){
             this.updateAuth({})
+            localStorage.removeItem('auth')
             this.$router.push('/')
         },
         
@@ -22,11 +32,3 @@ export default {
     }
 }
 </script>
-<style>
-    header {
-        background-color: #6200ed;
-    }
-    .h4 {
-        cursor: pointer;
-    }
-</style>

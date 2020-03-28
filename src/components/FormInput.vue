@@ -1,7 +1,9 @@
 <template>
     <div class="position-relative">
         <input @input="setModel($event)"
-        :type="type" :class="['form-control pr-4', {'border-danger':error}]" name="" placeholder="">
+        :type="type" 
+        :class="['form-control pr-4', {'border-danger':error}]" 
+        :placeholder="placeholder">
         <font-awesome-icon v-show="error" :id="name" icon="exclamation-triangle" class="text-danger errorIcon position-absolute"/>
         <b-tooltip :target="name"  placement="top">
             {{error}}
@@ -14,7 +16,8 @@ export default {
         error: String,
         model: Object,
         name: String,
-        type: String
+        type: String,
+        placeholder: String,
     },
     methods: {
         setModel(event){

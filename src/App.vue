@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="vh-100">
-    <header-component style="height:5%"/>
-    <div class="container" style="height:95%">
+    <header-component/>
+    <div class="container">
       <router-view/>
     </div>
   </div>

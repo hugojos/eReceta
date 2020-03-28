@@ -57,7 +57,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if ((to.name != 'Login' || to.name == 'Register') && !Object.keys(store.state.auth).length) next({ name: 'Login' })
-  if ((to.name == 'Login' || to.name == 'Register') && Object.keys(store.state.auth).length) next(false)
+  if ((to.name == 'Login' || to.name == 'Register') && Object.keys(store.state.auth).length) next('/nuevo-cupon')
   else next()
 })
 

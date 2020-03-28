@@ -1,6 +1,25 @@
 <template>
     <div class="h-100 row justify-content-center align-items-center mt-2">
-        <div class="col-12" id="my_pdf_viewer">
+        <div class="col-12 col-lg-8 row align-items-center mb-1">
+            <div @click="$router.push('/nuevo-cupon')"
+            class="col-3 p-0 d-flex pointer align-items-center justify-content-start">
+                <font-awesome-icon icon="arrow-circle-left" class="h4 text-primary mr-1 m-0 float-left" title="Atras" />
+                <span>
+                    <u>Volver</u>
+                </span>
+            </div>
+            <div class="col-6">
+
+            </div>
+            <div @click="download()"
+            class="col-3 p-0 d-flex pointer align-items-center justify-content-end">
+                <span>
+                    <u>Descargar</u>
+                </span>
+                <font-awesome-icon icon="file-download" class="ml-1 text-primary h3 m-0 float-right" title="Descargar receta"/>
+            </div>
+        </div>
+        <div class="col-12 col-lg-8" id="my_pdf_viewer">
             <div class="" id="canvas_container">
                 <canvas class="" id="pdf_renderer"></canvas>
             </div>
@@ -19,11 +38,22 @@ export default {
         }
     },
     methods: {
+        download(){
+            let bytes = new Uint8Array(this.$store.state.dataPDF); // pass your byte response to this constructor
+
+            let blob=new Blob([bytes], {type: "application/pdf"});// change resultByte to bytes
+
+            let link=document.createElement('a');
+            link.href=window.URL.createObjectURL(blob);
+            link.download="Receta.pdf";
+            link.click();
+        },
         render() {
             this.state.pdf.getPage(this.state.currentPage).then((page) => {
                 let canvas = document.getElementById("pdf_renderer");
                 let ctx = canvas.getContext('2d');
-                let viewport = page.getViewport(1);
+                let container = document.getElementById('my_pdf_viewer')
+                let viewport = page.getViewport(container.offsetWidth / page.getViewport(1.1).width);
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
                 page.render({
@@ -45,10 +75,11 @@ export default {
     #canvas_container {
         width: 100%;
         height: 100%;
-        overflow: auto;
-        background: #333;
         text-align: center;
-        border: solid 3px;
+        overflow: auto;
+    }
+    #pdf_renderer {
+        border: 1px solid gray;
     }
     .container {
         margin: 0!important;

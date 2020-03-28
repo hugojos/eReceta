@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import { BootstrapVue } from 'bootstrap-vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEye, faSearch, faEyeSlash, faExclamationTriangle, faSignOutAlt, faArrowCircleLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faSearch, faEyeSlash, faExclamationTriangle, faSignOutAlt, faArrowCircleLeft, faTimes, faTrashAlt, faPlus, faMinus, faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // Install BootstrapVue
@@ -15,7 +15,7 @@ Vue.use(BootstrapVue)
 
 window.axios = axios;
 
-library.add({faEye, faSearch, faEyeSlash, faExclamationTriangle, faSignOutAlt, faArrowCircleLeft, faTimes})
+library.add({faEye, faSearch, faEyeSlash, faExclamationTriangle, faSignOutAlt, faArrowCircleLeft, faTimes, faTrashAlt, faPlus, faMinus, faFileDownload})
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 //Components
