@@ -5,13 +5,17 @@ import store from './store'
 import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import { BootstrapVue } from 'bootstrap-vue'
+import { ModalPlugin, TooltipPlugin, AlertPlugin, SpinnerPlugin, ButtonPlugin } from 'bootstrap-vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faSearch, faEyeSlash, faExclamationTriangle, faSignOutAlt, faArrowCircleLeft, faTimes, faTrashAlt, faPlus, faMinus, faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // Install BootstrapVue
-Vue.use(BootstrapVue)
+Vue.use(ModalPlugin)
+Vue.use(TooltipPlugin)
+Vue.use(AlertPlugin)
+Vue.use(SpinnerPlugin)
+Vue.use(ButtonPlugin)
 
 window.axios = axios;
 

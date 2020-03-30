@@ -3,7 +3,9 @@
         <input @input="setModel($event)"
         :type="type" 
         :class="['form-control pr-4', {'border-danger':error}]" 
-        :placeholder="placeholder">
+        :placeholder="placeholder"
+        :maxlength="maxlength"
+        >
         <font-awesome-icon v-show="error" :id="name" icon="exclamation-triangle" class="text-danger errorIcon position-absolute"/>
         <b-tooltip :target="name"  placement="top">
             {{error}}
@@ -18,12 +20,16 @@ export default {
         name: String,
         type: String,
         placeholder: String,
+        maxlength: {
+            default: "false",
+            type: String
+        }
     },
     methods: {
         setModel(event){
             this.$set(this.model, this.name, event.target.value)
         }
-    }
+    },
 }
 </script>
 <style>

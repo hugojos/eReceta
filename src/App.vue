@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="vh-100">
     <header-component/>
-    <div class="container">
+    <div class="container d-flex justify-content-center align-items-center">
       <router-view/>
     </div>
   </div>
@@ -14,7 +14,6 @@
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    min-height: 100vh;
-  }
-
+    padding-top: 45px;
+  }  
 </style>

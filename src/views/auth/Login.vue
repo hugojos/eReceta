@@ -1,9 +1,9 @@
 <template>
-    <div class="h-100 row justify-content-center align-items-center">
-        <form @submit="validate()" 
-        action="" method="POST" class="mt-5 col-11 col-md-6 col-lg-4 text-center">
-            <div class="row justify-content-center">
-                <img src="img/eReceta.jpg" class="col-10 col-md-12 mb-5" alt="">
+    <div class="row w-100 justify-content-center h-75 mt-5">
+        <form @keypress.enter="validate()" 
+        action="/" method="POST" class="col-11 col-md-8 col-lg-5 text-center">
+            <div class="mb-5">
+                <img src="img/eReceta.jpg" class="w-100" alt="">
             </div>
             <b-alert show variant="danger" v-show="!status">{{alertMessage}}</b-alert>
             <div class="form-group text-left">
@@ -31,8 +31,8 @@
                 </b-button>
             </div>
             <div class="form-group d-flex flex-column">
-                <router-link to="/registrar-medico">Registrarse</router-link>
-                <a href="">Recuperar contraseña</a>
+                <router-link to="/registrarse">Registrarse</router-link>
+                <router-link to="/recuperar">Recuperar contraseña</router-link>
             </div>
         </form>
     </div>
@@ -68,9 +68,8 @@ export default {
         },
         login(){
             this.loading = true
-            axios.post('http://190.19.60.31:5004/erp-web/view/recetaCupon/login', this.user)
+            axios.post('http://'+properties.ip+'/erp-web/view/recetaCupon/login', this.user)
             .then(response => {
-                console.log(response)
                 if(this.recordarme) 
                     localStorage.setItem('auth', JSON.stringify(response.data))
                 this.updateAuth(response.data)
@@ -81,7 +80,7 @@ export default {
                 if(error.response && error.response.status == 401)
                     this.alertMessage = '¡Usuario y/o contraseña incorrecto!'
                 else 
-                    this.alertMessage = error.message
+                    this.alertMessage = 'No se pudo continuar con el proceso: '+ error.message
             })
             .finally(response => {
                 this.loading = false

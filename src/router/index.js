@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../views/auth/Login.vue'
-import Register from '../views/auth/Register.vue'
-import NuevoCupon from '../views/NuevoCupon.vue'
-import Cupon from '../views/Cupon.vue'
+//import Login from '../views/auth/Login.vue'
+//import Register from '../views/auth/Register.vue'
+//import NuevaReceta from '../views/NuevaReceta.vue'
+//import Receta from '../views/Receta.vue'
 import store from '../store/index.js'
 
 Vue.use(VueRouter)
@@ -12,34 +12,53 @@ const routes = [
   {
     path: '/',
     name: 'Login',
-    component: Login,
+    component: () => import(/* webpackChunkName: "Login" */  '../views/auth/Login.vue'),
     meta: {
-      title: 'Iniciar sesión'
+      title: 'Iniciar sesión',
+      auth: false,
     }
   },
   {
-    path: '/registrar-medico',
+    path: '/registrarse',
     name: 'Register',
-    component: Register,
+    //component: Register,
+    component: () => import(/* webpackChunkName: "Register" */ '../views/auth/Register.vue'),
     meta: {
-      title: 'Registrar medico'
+      title: 'Registrar medico',
+      auth: false,
     }
   },
   {
-    path: '/nuevo-cupon',
-    name: 'NuevoCupon',
-    component: NuevoCupon,
+    path: '/nueva-receta',
+    name: 'NuevaReceta',
+    //component: NuevaReceta,
+    component: () => import(/* webpackChunkName: "NuevaReceta" */ '../views/NuevaReceta.vue'),
     meta: {
-      title: 'Nuevo Cupon'
+      title: 'Nuevo receta',
+      auth: true,
     }
   },
   {
-    path: '/cupon',
-    name: 'Cupon',
-    component: Cupon,
+    path: '/receta',
+    name: 'Receta',
+    component: () => import(/* webpackChunkName: "Receta" */ '../views/Receta.vue'),
     meta: {
-      title: 'Cupon'
+      title: 'Receta',
+      auth: true,
     }
+  },
+  {
+    path: '/recuperar',
+    name: 'Recuperar',
+    component: () => import(/* webpackChunkName: "Recuperar"*/ '../views/auth/RecoverPassword.vue'),
+    meta: {
+      auth: false,
+    }
+  },
+  {
+    path: '/nueva-contrasena',
+    name: 'NuevaContrasena',
+    component: () => import(/* webpackChunkName: "NuevaContrasena" */ '../views/auth/NewPassword.vue')
   }
   /*{
     path: '/about',
@@ -56,8 +75,9 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if ((to.name != 'Login' || to.name == 'Register') && !Object.keys(store.state.auth).length) next({ name: 'Login' })
-  if ((to.name == 'Login' || to.name == 'Register') && Object.keys(store.state.auth).length) next('/nuevo-cupon')
+  if(to.meta.auth && store.state.auth) next()
+  else if(to.meta.auth && !store.state.auth) next('/')
+  else if(!to.meta.auth && store.state.auth) next('/nueva-receta')
   else next()
 })
 

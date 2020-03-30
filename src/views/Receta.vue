@@ -1,16 +1,14 @@
 <template>
-    <div class="h-100 row justify-content-center align-items-center mt-2">
+    <div class="h-100 w-100 row justify-content-center align-items-center mt-2">
         <div class="col-12 col-lg-8 row align-items-center mb-1">
-            <div @click="$router.push('/nuevo-cupon')"
+            <div @click="$router.push('/nueva-receta')"
             class="col-3 p-0 d-flex pointer align-items-center justify-content-start">
                 <font-awesome-icon icon="arrow-circle-left" class="h4 text-primary mr-1 m-0 float-left" title="Atras" />
                 <span>
                     <u>Volver</u>
                 </span>
             </div>
-            <div class="col-6">
-
-            </div>
+            <div class="col-6"></div>
             <div @click="download()"
             class="col-3 p-0 d-flex pointer align-items-center justify-content-end">
                 <span>
@@ -19,7 +17,7 @@
                 <font-awesome-icon icon="file-download" class="ml-1 text-primary h3 m-0 float-right" title="Descargar receta"/>
             </div>
         </div>
-        <div class="col-12 col-lg-8" id="my_pdf_viewer">
+        <div class="col-12 col-lg-8 p-0" id="my_pdf_viewer">
             <div class="" id="canvas_container">
                 <canvas class="" id="pdf_renderer"></canvas>
             </div>
