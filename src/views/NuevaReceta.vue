@@ -192,7 +192,7 @@ export default {
         document.querySelector('table').addEventListener('mousedown', (e) => {
             e.preventDefault()
         })
-    }
+    },
 }
 </script>
 <style>

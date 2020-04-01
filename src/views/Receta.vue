@@ -17,9 +17,9 @@
                 <font-awesome-icon icon="file-download" class="ml-1 text-primary h3 m-0 float-right" title="Descargar receta"/>
             </div>
         </div>
-        <div class="col-12 col-lg-8 p-0" id="my_pdf_viewer">
+        <div class="w-100 col-12 col-lg-8 p-0" id="my_pdf_viewer">
             <div class="" id="canvas_container">
-                <canvas class="" id="pdf_renderer"></canvas>
+                <canvas class="border border-dark" id="pdf_renderer"></canvas>
             </div>
         </div>
     </div>
@@ -51,7 +51,7 @@ export default {
                 let canvas = document.getElementById("pdf_renderer");
                 let ctx = canvas.getContext('2d');
                 let container = document.getElementById('my_pdf_viewer')
-                let viewport = page.getViewport(container.offsetWidth / page.getViewport(1.1).width);
+                let viewport = page.getViewport({scale: (container.offsetWidth / page.getViewport({scale:1.1}).width)});
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
                 page.render({
@@ -62,24 +62,18 @@ export default {
         }
     },
     mounted(){
-        pdfjsLib.getDocument({data: this.$store.state.dataPDF}).then((pdf) => {
+        const loadPDF = pdfjsLib.getDocument({data: this.$store.state.dataPDF}).promise.then(pdf => {
             this.state.pdf = pdf;
             this.render()
-        });
-    }
+        })
+    },
 }
 </script>
-<style scoped>
+<style>
     #canvas_container {
         width: 100%;
         height: 100%;
         text-align: center;
         overflow: auto;
-    }
-    #pdf_renderer {
-        border: 1px solid gray;
-    }
-    .container {
-        margin: 0!important;
     }
 </style>
