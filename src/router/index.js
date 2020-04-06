@@ -39,6 +39,16 @@ const routes = [
     }
   },
   {
+    path: '/firmar',
+    name: 'Firmar',
+    //component: NuevaReceta,
+    component: () => import(/* webpackChunkName: "NuevaReceta" */ '../views/Firmar.vue'),
+    meta: {
+      title: 'Firmar',
+      auth: true,
+    }
+  },
+  {
     path: '/receta',
     name: 'Receta',
     component: () => import(/* webpackChunkName: "Receta" */ '../views/Receta.vue'),

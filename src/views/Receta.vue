@@ -67,6 +67,10 @@ export default {
             this.render()
         })
     },
+    beforeRouteEnter (to, from, next) {
+        if(from.name != 'Firmar') next('/nueva-receta')
+        else next()
+    }
 }
 </script>
 <style>

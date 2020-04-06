@@ -7,13 +7,47 @@
     <link rel="icon" href="img/1.jpg">
     <title>eReceta</title>
     <link rel="stylesheet" href="./index.css">
+        <style>
+      * {
+        margin: 0;
+      }
+      #loading-screen {
+        display: -webkit-flex;
+	      display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 0;
+        height: 100vh;
+        width: 100vw;
+      }
+      #loading-screen > div {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        height: 50% ;
+        width: 60px;
+      }
+    </style>
   </head>
   <body>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app"></div>
+    <div class="loading-screen bg-purpura" id="loading-screen">
+      <div>
+          <img src="img/1.jpg" style="width:60px;margin-bottom: 60px;" alt="">
+          <img src="svg-loaders/tail-spin.svg" />
+      </div>
+    </div>
+    <script>
+      window.onload = function(){
+        document.getElementById('loading-screen').remove()
+      }
+    </script>
     <!-- built files will be auto injected -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
     <script src="properties.js"></script>
   </body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.min.js"></script>

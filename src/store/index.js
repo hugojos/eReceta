@@ -5,8 +5,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    dataPDF: [],
-    auth: localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : false
+    dataPDF: {},
+    data: {},
+    auth: localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : false,
   },
   mutations: {
     mutateDataPDF(state, value) {
@@ -14,6 +15,9 @@ export default new Vuex.Store({
     },
     mutateAuth(state, user){
       return state.auth = user
+    },
+    mutateData(state, value){
+      return state.data = value
     }
   },
   actions: {
@@ -22,6 +26,9 @@ export default new Vuex.Store({
     },
     updateAuth({commit}, value){
       commit('mutateAuth', value)
+    },
+    updateData({commit}, value){
+      commit('mutateData', value)
     }
   },
   modules: {

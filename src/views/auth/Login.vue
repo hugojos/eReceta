@@ -2,18 +2,23 @@
     <div class="row w-100 justify-content-center h-75 mt-5">
         <form @keypress.enter="validate()" 
         action="/" method="POST" class="col-11 col-md-8 col-lg-5 text-center">
-            <div class="mb-5">
-                <img src="img/eReceta.jpg" class="w-100" alt="">
+            <div class="mb-4">
+                <img src="img/eReceta.png" class="w-100" alt="">
+                <div class="version mt-3">
+                    <span class="h4 mb-0 font-weight-bold text-uppercase">{{version}}</span>
+                </div>
             </div>
-            <b-alert show variant="danger" v-show="!status">{{alertMessage}}</b-alert>
+            <b-alert show variant="danger" v-show="!status">
+                <span class="small">{{alertMessage}}</span>
+            </b-alert>
             <div class="form-group text-left">
-                <label for="email">Usuario</label>
-                <form-input :model="user" :error="error.email" type="text" name="email" placeholder="Ingrese su usuario"/>
+                <label class="font-weight-bold" for="email">Usuario</label>
+                <form-input :model="user" :error="error" type="text" name="email" placeholder="Ingrese su usuario"/>
             </div>
             <div class="form-group text-left mb-2">
-                <label for="password">Contraseña</label>
+                <label class="font-weight-bold" for="password">Contraseña</label>
                 <div class="position-relative">
-                    <form-input :model="user" :error="error.password" :type="showPassword ? 'text':'password'" name="password" placeholder="Ingrese su contraseña"/>
+                    <form-input :model="user" :error="error" :type="showPassword ? 'text':'password'" name="password" placeholder="Ingrese su contraseña"/>
                     <font-awesome-icon @click="showPassword = !showPassword" :icon="showPassword ? 'eye-slash': 'eye'" class="position-absolute pointer" style="right:-25px; top:12px;"/>
                 </div>
             </div>
@@ -52,7 +57,8 @@ export default {
             loading: false,
             status: true,
             alertMessage: '',
-            recordarme: false
+            recordarme: false,
+            version: properties.version
         }
     },
     methods: {
@@ -60,31 +66,24 @@ export default {
         validate(){
             this.error = {}
             Object.keys(this.user).forEach(key => {
-                if(!this.user[key])
-                    this.$set(this.error, key, '¡El campo no debe estar vacio!')
+                if(!this.user[key]) this.$set(this.error, key, '¡El campo no debe estar vacio!')
             })
-            if(!Object.keys(this.error).length)
-                this.login()
+            if(!Object.keys(this.error).length) this.login()
         },
         login(){
             this.loading = true
-            axios.post('http://'+properties.ip+'/erp-web/view/recetaCupon/login', this.user)
+            axios.post('http://'+properties.ip+'/erp-web/view/eReceta/login', this.user)
             .then(response => {
-                if(this.recordarme) 
-                    localStorage.setItem('auth', JSON.stringify(response.data))
+                if(this.recordarme) localStorage.setItem('auth', JSON.stringify(response.data))
                 this.updateAuth(response.data)
-                this.$router.push('/nuevo-cupon')
+                this.$router.push('/nueva-receta')
             })
             .catch(error => {
                 this.status = false
-                if(error.response && error.response.status == 401)
-                    this.alertMessage = '¡Usuario y/o contraseña incorrecto!'
-                else 
-                    this.alertMessage = 'No se pudo continuar con el proceso: '+ error.message
+                if(error.response && error.response.status == 401) this.alertMessage = '¡Usuario y/o contraseña incorrecto!'
+                else this.alertMessage = 'No se pudo continuar con el proceso: '+ error.message
             })
-            .finally(response => {
-                this.loading = false
-            })
+            .finally(() => this.loading = false)
         }
     },
 }

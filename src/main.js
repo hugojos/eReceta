@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import { ModalPlugin, TooltipPlugin, AlertPlugin, SpinnerPlugin, ButtonPlugin } from 'bootstrap-vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEye, faSearch, faEyeSlash, faExclamationTriangle, faSignOutAlt, faArrowCircleLeft, faTimes, faTrashAlt, faPlus, faMinus, faFileDownload } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faSearch, faEyeSlash, faExclamationTriangle, faSignOutAlt, faArrowCircleLeft, faTimes, faTrashAlt, faPlus, faMinus, faFileDownload, faBars, faUser, faAngleDown, faNotesMedical, faPrescriptionBottle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // Install BootstrapVue
@@ -19,7 +19,7 @@ Vue.use(ButtonPlugin)
 
 window.axios = axios;
 
-library.add({faEye, faSearch, faEyeSlash, faExclamationTriangle, faSignOutAlt, faArrowCircleLeft, faTimes, faTrashAlt, faPlus, faMinus, faFileDownload})
+library.add({faEye, faSearch, faEyeSlash, faExclamationTriangle, faSignOutAlt, faArrowCircleLeft, faTimes, faTrashAlt, faPlus, faMinus, faFileDownload, faBars, faUser, faAngleDown, faNotesMedical, faPrescriptionBottle})
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 //Components

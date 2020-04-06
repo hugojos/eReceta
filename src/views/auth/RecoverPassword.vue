@@ -8,7 +8,7 @@
             <h4 class="text-center">Recuperar contraseña</h4>
             <p class="text-muted small">Por favor, indiquenos su dirrecion de correo electrónico para enviarle el enlace para reestablecer su contraseña.</p>
             <div class="form-group text-left">
-                <form-input :model="user" :error="error.email" type="text" name="email" placeholder="Ingrese su correo electrónico"/>
+                <form-input :model="user" :error="error" type="text" name="email" placeholder="Ingrese su correo electrónico"/>
             </div>
             <div class="form-group text-right mt-2">
                 <b-button @click="validate()"

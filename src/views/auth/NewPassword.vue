@@ -5,12 +5,12 @@
             <h4 class="mb-3">Escriba su nueva contraseña</h4>
             <div class="form-group text-left">
                 <label for="email">Contraseña</label>
-                <form-input :model="user" :error="error.password" type="password" name="password" placeholder="Ingrese su contraseña"/>
+                <form-input :model="user" :error="error" type="password" name="password" placeholder="Ingrese su contraseña"/>
             </div>
             <div class="form-group text-left mb-2">
                 <label for="password">Confirme contraseña</label>
                 <div class="position-relative">
-                    <form-input :model="user" :error="error.confirmPassword" type="password" name="confirmPassword" placeholder="Confirme su contraseña"/>
+                    <form-input :model="user" :error="error" type="password" name="confirmPassword" placeholder="Confirme su contraseña"/>
                 </div>
             </div>
             <div class="form-group mt-3">

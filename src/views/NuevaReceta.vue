@@ -1,22 +1,35 @@
 <template>
     <div class="h-100 row pt-2 justify-content-center">
         <div class="col-12 col-md-6 text-left">
-            <span class="text-muted">Datos del paciente</span>
+            <span class="text-muted font-weight-bold">Datos del paciente</span>
             <form @submit="validate()" 
             action="" method="POST" class="border border-dark p-2">
                 <div class="form-group row">
                     <div class="col-6 col-md-12 pr-1 pr-md-3 mb-md-3 text-left">
-                        <label for="">Nombre</label>
-                        <form-input :model="paciente" :error="error.nombre" type="text" name="nombre" placeholder="Ingrese nombre"/>
+                        <label for="" class="font-weight-bold">Nombre</label>
+                        <form-input :model="paciente" :error="error" type="text" name="nombre" placeholder="Ingrese nombre"/>
                     </div>
                     <div class="col-6 col-md-12 pl-1 pl-md-3 text-left">
-                        <label for="">Apellido</label>
-                        <form-input :model="paciente" :error="error.apellido" type="text" name="apellido" placeholder="Ingrese apellido"/>
+                        <label for="" class="font-weight-bold">Apellido</label>
+                        <form-input :model="paciente" :error="error" type="text" name="apellido" placeholder="Ingrese apellido"/>
                     </div>
                 </div>
                 <div class="form-group text-left">
-                    <label for="">DNI</label>
-                    <form-input :model="paciente" :error="error.dni" type="number" name="dni" placeholder="Ingrese DNI"/>
+                    <label for="" class="font-weight-bold">DNI <span class="text-muted small">(opcional)</span> </label>
+                    <form-input :model="paciente" :error="error" type="number" name="dni" placeholder="Ingrese DNI"/>
+                </div>
+                <div class="form-group text-left">
+                    <label for="" class="font-weight-bold">Obra social <span class="text-muted small">(opcional)</span> </label>            
+                    <select v-model="paciente.obraSocial"
+                    class="custom-select" name="" id="">
+                        <option value="">Seleccionar</option>
+                        <option v-for="obra in obraSociales" :key="obra.nombre" :value="obra.nombre">{{obra.nombre}} </option>
+                    </select>
+                </div>
+                <div v-if="paciente.obraSocial"
+                class="form-group text-left">
+                    <label for="afiliado" class="font-weight-bold">N° Afiliado</label>
+                    <form-input :model="paciente" :error="error" type="text" name="numeroAfiliado" placeholder="Ingrese numero afiliado"/>
                 </div>
             </form>
         </div>
@@ -33,16 +46,14 @@
                         <li
                         v-for="medicamento in listaMedicamento" :key="medicamento.id"
                         @click="addSeleccionado(medicamento)"
-                        class="p-2 text-left border-bottom d-flex justify-content-between align-items-center"
-                        style="cursor:pointer"
-                        >
-                        <span>{{medicamento.nombre}}</span>
-                        <span class="text-muted small "><u>Seleccionar</u></span> 
+                        class="p-2 text-left border-bottom d-flex justify-content-between align-items-center pointer">
+                            <span>{{medicamento.nombre}}</span>
+                            <span class="text-muted small "><u>Seleccionar</u></span> 
                         </li>
                     </ul>
                 </div>
                 <div class="col-12 m-auto">
-                    <h2 class="text-muted h6">Medicamentos seleccionados ({{seleccionados.length}})</h2>
+                    <h2 class="text-muted h6 font-weight-bold">Medicamentos seleccionados ({{seleccionados.length}})</h2>
                     <table class="table mb-0 text-muted table-bordered">
                         <thead>
                             <tr class="h6 text-left">
@@ -67,9 +78,7 @@
                                             class="bg-purpura p-1 rounded pointer d-flex align-items-center" style="line-height: 0.5">
                                                 <font-awesome-icon icon="minus" class="small text-white" title="Restar"/>
                                             </div>
-                                            <div>
-                                                {{medicamento.cantidad}}
-                                            </div>
+                                            <div>{{medicamento.cantidad}}</div>
                                             <div @click="medicamento.cantidad++" 
                                             class="bg-purpura p-1 rounded pointer d-flex align-items-center" style="line-height: 0.5">
                                                 <font-awesome-icon icon="plus" class="small text-white" title="Sumar"/>
@@ -105,9 +114,12 @@ export default {
                 nombre: '',
                 apellido: '',
                 dni: '',
+                obraSocial: '',
+                numeroAfiliado: ''
             },
             error:{},
-            medicamentos: JSON.parse(localStorage.getItem('medicamentos')),
+            medicamentos: [],
+            obraSociales: [],
             seleccionados: [],
             query: '',
             loading: false,
@@ -130,19 +142,20 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['updateDataPDF']),
+        ...mapActions(['updateDataPDF','updateData']),
         validate(){
             this.error = {}
             this.errorStatus = false
             if(this.paciente.dni.length && !(this.paciente.dni.length >= 7 && this.paciente.dni.length <= 8)) this.error.dni = 'El DNI debe tener entre 7 y 8 digitos'
+            if(this.paciente.obraSocial.length && !this.paciente.numeroAfiliado.length) this.error.numeroAfiliado = 'El campo no debe estar vacio'
             if(!this.seleccionadosNoEsCero) this.error.message = 'La cantidad no puede ser 0'
-            if(!this.seleccionados.length)  this.error.message = '¡Debe seleccionar al menos un medicamento!'
+            if(!this.seleccionados.length) this.error.message = '¡Debe seleccionar al menos un medicamento!'
             Object.keys(this.paciente).forEach(key => {
-                if(!this.paciente[key] && key != 'dni')
-                    this.$set(this.error, key, '¡El campo no debe estar vacio!')
+                if(!this.paciente[key] && key != 'dni' && key != 'obraSocial' && key != 'numeroAfiliado')
+                    this.$set(this.error, key, 'El campo no debe estar vacio')
             })
             if(!Object.keys(this.error).length)
-                this.enviar()
+                this.siguiente()
         },
         addSeleccionado(data){
             this.query = ''
@@ -155,40 +168,36 @@ export default {
             let i = this.seleccionados.findIndex(medicamento => medicamento.nombre == data.nombre)
             this.medicamentos.push(this.seleccionados.splice(i, 1)[0])
         },
-        enviar(){
+        siguiente(){
             this.loading = true
             this.errorStatus = false
             let data = {
                 usuarioMedicoDto: this.$store.state.auth,
                 pacienteDto: this.paciente,
                 medicamentoDtos: this.seleccionados
-            }
-            axios.post('http://'+properties.ip+'/erp-web/view/recetaCupon/nuevoCupon', data)
-            .then(response => {
-                this.updateDataPDF(response.data)
-                this.$router.push('/receta')
-            })
-            .catch(error => {
-                this.errorStatus = true
-                this.error.message = 'No se pudo continuar con el proceso: ' + error.message
-            })
-            .finally(response => this.loading = false)
+            }            
+            this.updateData(data)
+            this.$router.push('/firmar')
         },
     },
     mounted(){
-        axios.post('http://'+properties.ip+'/erp-web/view/recetaCupon/medicamentos', {
+        //Carga lista de medicamentos
+        axios.post('http://'+properties.ip+'/erp-web/view/eReceta/medicamentos', {
             nombre: '',
             descuento:'',
             cantidad:''
         })
         .then(response => {
-            console.log(response)
             this.medicamentos = response.data
         })
         .catch(error => {
             this.errorStatus = true
             this.error.message = 'No se pudo cargar la lista de medicamentos: ' + error.message
         })
+        //Carga lista de obra social
+        axios.post('http://'+properties.ip+'/erp-web/view/eReceta/obrasSociales')
+        .then(response => this.obraSociales = response.data)
+
         document.querySelector('table').addEventListener('mousedown', (e) => {
             e.preventDefault()
         })

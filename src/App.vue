@@ -2,11 +2,12 @@
   <div id="app" class="vh-100">
     <header-component/>
     <div class="container d-flex justify-content-center align-items-center">
-      <router-view/>
+      <transition :name="$route.name == 'Login' || $route.name == 'Register' || $route.name == 'Recuperar' ? 'fade' : 'slide-right'" mode="out-in">  
+        <router-view />
+      </transition>
     </div>
   </div>
 </template>
-
 <style>
   #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -15,5 +16,5 @@
     text-align: center;
     color: #2c3e50;
     padding-top: 45px;
-  }  
+  }
 </style>
