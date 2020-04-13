@@ -25,6 +25,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 //Components
 Vue.component('header-component', require('./views/parts/TheHeader.vue').default)
 Vue.component('form-input', require('./components/FormInput.vue').default)
+Vue.component('form-login', require('./components/FormLogin.vue').default)
 
 new Vue({
   router,

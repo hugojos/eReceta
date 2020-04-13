@@ -10,7 +10,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/iniciar-sesion',
     name: 'Login',
     component: () => import(/* webpackChunkName: "Login" */  '../views/auth/Login.vue'),
     meta: {
@@ -35,7 +35,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "NuevaReceta" */ '../views/NuevaReceta.vue'),
     meta: {
       title: 'Nuevo receta',
-      auth: true,
+      auth: false,
     }
   },
   {
@@ -45,7 +45,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "NuevaReceta" */ '../views/Firmar.vue'),
     meta: {
       title: 'Firmar',
-      auth: true,
+      auth: false,
     }
   },
   {
@@ -69,15 +69,11 @@ const routes = [
     path: '/nueva-contrasena',
     name: 'NuevaContrasena',
     component: () => import(/* webpackChunkName: "NuevaContrasena" */ '../views/auth/NewPassword.vue')
+  },
+  {
+    path: '*',
+    redirect: {name: 'NuevaReceta'}
   }
-  /*{
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about"  '../views/About.vue')
-  }*/
 ]
 
 const router = new VueRouter({
@@ -85,10 +81,11 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if(to.meta.auth && store.state.auth) next()
-  else if(to.meta.auth && !store.state.auth) next('/')
+  /*if(to.meta.auth && store.state.auth) next()
+  else if(to.meta.auth && !store.state.auth) next('/iniciar-sesion')
   else if(!to.meta.auth && store.state.auth) next('/nueva-receta')
-  else next()
+  else */
+  next()
 })
 
 export default router

@@ -1,10 +1,10 @@
 <template>
     <div class="w-100 row justify-content-center align-items-center">
-        <b-modal id="modal-center" class="rounded" hide-footer hide-header centered>
+        <b-modal id="modal-register" body-bg-variant="success" class="rounded" hide-footer hide-header centered>
             <p class="my-3 text-center h4 text-white">{{modalMessage}}</p>
         </b-modal>
         <form @keypress.enter="validate()" 
-        action="" method="POST" class="mt-2 col-12 col-md-8 col-lg-6 text-center">
+        action="" method="POST" class="rounded mt-2 col-12 col-md-8 col-lg-6 text-center">
             <div class="form-group text-left">
                 <label for="" class="font-weight-bold">Nombre(s)</label>
                 <form-input :model="medico" :error="error" type="text" name="nombre" placeholder="Ingrese su nombre completo"/>
@@ -53,7 +53,7 @@
                 <label for="" class="font-weight-bold">Confirmar contraseña</label>
                 <form-input :model="medico" :error="error" type="password" name="confirmPassword" placeholder="Confirme su contraseña"/>
             </div>
-            <span v-if="!status"
+            <span v-if="errorMessage"
             class="d-block mb-2 text-danger">{{errorMessage}}</span>
             <div class="form-group mb-2">
                 <b-button @click="validate()"
@@ -84,7 +84,6 @@ export default {
             },
             error: {},
             loading: false,
-            status: true,
             modalMessage : '',
             errorMessage: ''
         }
@@ -106,12 +105,12 @@ export default {
         },
         register(){
             this.loading = true
-            this.medico.idMedico = '0'
-            this.medico.usaApp = '0'
-            axios.post('http://'+properties.ip+'/erp-web/view/eReceta/registrar', this.medico)
+            this.medico.idMedico = 0
+            this.medico.usaApp = false
+            axios.post('http://'+properties.ip+'/registrar', this.medico)
             .then(response => {
                 this.modalMessage = response.data;
-                this.$bvModal.show('modal-center')
+                this.$bvModal.show('modal-register')
                 localStorage.setItem('auth', JSON.stringify(this.medico))
                 this.updateAuth(this.medico)
                 setTimeout(() => {
@@ -119,19 +118,17 @@ export default {
                 }, 2000)
             })
             .catch(error => {
-                this.status = false
+                console.dir(error)
                 this.errorMessage = 'No se pudo continuar con el proceso: ' + error.message;
-                if(error.response) this.errorMessage += '('+error.response.statusText+')'
+                if(error.response.data) this.errorMessage = error.response.data
             })
             .finally(response => {
                 this.loading = false
             })
         }
+    },
+    mounted(){
+        if(this.$store.state.auth) this.$router.push('nueva-receta')
     }
 }
 </script>
-<style scoped>
-    .modal-body {
-        background-color: #6200ed;
-    }
-</style>

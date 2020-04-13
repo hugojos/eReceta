@@ -1,17 +1,35 @@
 <template>
     <div class="h-100 w-100 row justify-content-center align-items-center mt-2">
         <b-modal 
-        id="modal-center" 
+        id="modal-iniciar-sesion" 
+        class="rounded" 
+        hide-footer
+        centered>
+            <template v-slot:modal-title>
+                <span class="text-muted">Solo un paso mas...</span>
+            </template>
+            <div class="d-block text-center">
+                <h4 class="mb-2">Inicie sesión para continuar</h4>
+                <form-login @respuesta="validate()"/>
+            </div>
+        </b-modal>
+        <b-modal 
+        id="modal-firma" 
         class="rounded" 
         hide-footer 
         hide-header 
-        centered
-        variant="danger">
+        centered>
             <div class="d-block text-center">
-                <h3>¡La firma no puede estar vacia!</h3>
+                <h3>¡La firma no puede quedar vacia!</h3>
             </div>
-            <b-button class="mt-3" variant="primary" block @click="$bvModal.hide('modal-center')">Cerrar</b-button>
+            <b-button class="mt-3" variant="primary" block @click="$bvModal.hide('modal-firma')">Cerrar</b-button>
         </b-modal>
+        <b-alert 
+        v-if="errorMessage"
+        show variant="danger" 
+        class="col-12 col-lg-8">
+            <span class="small">{{errorMessage}}</span>
+        </b-alert>
         <div class="col-12 col-lg-8 justify-content-center mb-1 p-0">
             <h2 class="h3 m-0 font-weight-bold">Firma digital</h2>
             <p class="text-muted mb-1 text-left text-md-center">Por favor, ingrese su firma para confimar la validez de la receta.</p>
@@ -23,7 +41,7 @@
             <div class="row">
                 <div class="col-6 pl-0 text-left">
                     <b-button @click="signature_pad.clear()"
-                    variant="danger"
+                    variant="outline-danger"
                     class="mr-2">
                         Limpiar
                     </b-button>
@@ -45,24 +63,38 @@ import { mapActions } from 'vuex'
 export default {
     data(){
         return {
+            user: {
+                email:'',
+                password:''
+            },
+            error: {},
             signature_pad: null,
             loading: false,
+            errorMessage: ''
         }
     },
     methods: {
         ...mapActions(['updateDataPDF','updateData']),
         validate(){
-            if(this.signature_pad.isEmpty()) this.$bvModal.show('modal-center')
-            else this.enviar()
+            if(this.signature_pad.isEmpty()) this.$bvModal.show('modal-firma')
+            else if(!this.$store.state.auth) this.$bvModal.show('modal-iniciar-sesion')
+            else {
+                this.$bvModal.hide('modal-iniciar-sesion')
+                this.enviar()
+            }
         },
         enviar() {
             this.loading = true
             let data = this.$store.state.data;
             data.firmaDigital = this.convertDataURIToBinary( this.signature_pad.toDataURL() )
-            axios.post('http://'+properties.ip+'/erp-web/view/eReceta/nuevaReceta', data)
+            console.log(data)
+            axios.post('http://'+properties.ip+'/nuevaReceta', data)
             .then(response => {
                 this.updateDataPDF(response.data)
                 this.$router.push('/receta')
+            })
+            .catch(error => {
+                this.errorMessage = 'No se pudo continuar con el proceso: '+ error.message
             })
             .finally(() => this.loading = false)
         },
@@ -80,18 +112,12 @@ export default {
         },
     },
     mounted() {
+        if(!Object.keys(this.$store.state.data).length) this.$router.push('/nueva-receta')
         let canvas = document.getElementById('canvas')
         this.signature_pad = new SignaturePad(canvas)
         canvas.height = canvas.offsetHeight;
         canvas.width = canvas.offsetWidth;
         this.signature_pad.on()
     },
-    beforeRouteEnter (to, from, next) {
-        if(from.name != 'NuevaReceta') next('/nueva-receta')
-        else next()
-    }
 }
 </script>
-<style>
-    
-</style>

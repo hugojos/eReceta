@@ -47,8 +47,7 @@
                         v-for="medicamento in listaMedicamento" :key="medicamento.id"
                         @click="addSeleccionado(medicamento)"
                         class="p-2 text-left border-bottom d-flex justify-content-between align-items-center pointer">
-                            <span>{{medicamento.nombre}}</span>
-                            <span class="text-muted small "><u>Seleccionar</u></span> 
+                            <span style="line-height: 1">{{medicamento.nombre + ' - ' + medicamento.formula}}</span>
                         </li>
                     </ul>
                 </div>
@@ -131,9 +130,10 @@ export default {
             if(this.query.length) {
                 let lista = this.medicamentos.filter(medicamento => medicamento.nombre.startsWith(this.query.toUpperCase())).slice(0,5)
                 lista = !lista.length ? this.medicamentos.filter(medicamento => medicamento.nombre.includes(this.query.toUpperCase())).slice(0,5) : lista
-                lista = !lista.length ? this.medicamentos.filter(medicamento => {
+                let busquedaPorFormula = this.medicamentos.filter(medicamento => {
                     return medicamento.formula != undefined ? medicamento.formula.includes(this.query.toUpperCase()) : false
-                }).slice(0,5) : lista
+                })
+                lista = Object.assign(lista, busquedaPorFormula).slice(0,6)
                 return lista;
             }
         },
@@ -182,7 +182,7 @@ export default {
     },
     mounted(){
         //Carga lista de medicamentos
-        axios.post('http://'+properties.ip+'/erp-web/view/eReceta/medicamentos', {
+        axios.post('http://'+properties.ip+'/medicamentos', {
             nombre: '',
             descuento:'',
             cantidad:''
@@ -195,7 +195,7 @@ export default {
             this.error.message = 'No se pudo cargar la lista de medicamentos: ' + error.message
         })
         //Carga lista de obra social
-        axios.post('http://'+properties.ip+'/erp-web/view/eReceta/obrasSociales')
+        axios.post('http://'+properties.ip+'/obrasSociales')
         .then(response => this.obraSociales = response.data)
 
         document.querySelector('table').addEventListener('mousedown', (e) => {

@@ -9,11 +9,15 @@ export default new Vuex.Store({
     data: {},
     auth: localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : false,
   },
+  getters: {
+   
+  },
   mutations: {
     mutateDataPDF(state, value) {
       return state.dataPDF = value
     },
     mutateAuth(state, user){
+      state.data.usuarioMedicoDto =  user
       return state.auth = user
     },
     mutateData(state, value){

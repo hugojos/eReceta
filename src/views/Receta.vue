@@ -1,14 +1,15 @@
 <template>
     <div class="h-100 w-100 row justify-content-center align-items-center mt-2">
-        <div class="col-12 col-lg-8 row align-items-center mb-1">
-            <div @click="$router.push('/nueva-receta')"
-            class="col-3 p-0 d-flex pointer align-items-center justify-content-start">
-                <font-awesome-icon icon="arrow-circle-left" class="h4 text-primary mr-1 m-0 float-left" title="Atras" />
-                <span>
-                    <u>Volver</u>
-                </span>
+        <div class="col-12 col-lg-8 row align-items-center mb-1 p-0">
+            <div class="col-3 p-0 d-flex pointer align-items-center justify-content-start">
             </div>
-            <div class="col-6"></div>
+            <div 
+            @click="$router.push('/nueva-receta')"
+            class="col-6">
+                <b-button variant="primary">
+                    Nueva receta
+                </b-button>
+            </div>
             <div @click="download()"
             class="col-3 p-0 d-flex pointer align-items-center justify-content-end">
                 <span>
@@ -37,9 +38,8 @@ export default {
     },
     methods: {
         download(){
-            let bytes = new Uint8Array(this.$store.state.dataPDF); // pass your byte response to this constructor
-
-            let blob=new Blob([bytes], {type: "application/pdf"});// change resultByte to bytes
+            let data = Uint8Array.from(atob(this.$store.state.dataPDF.archivo), c => c.charCodeAt(0));
+            let blob = new Blob([data], {type: "octet/stream"});
 
             let link=document.createElement('a');
             link.href=window.URL.createObjectURL(blob);
@@ -62,15 +62,12 @@ export default {
         }
     },
     mounted(){
-        const loadPDF = pdfjsLib.getDocument({data: this.$store.state.dataPDF}).promise.then(pdf => {
+        if(!Object.keys(this.$store.state.dataPDF).length) this.$router.push('/nueva-receta')
+        const loadPDF = pdfjsLib.getDocument({data: atob(this.$store.state.dataPDF.archivo)}).promise.then(pdf => {
             this.state.pdf = pdf;
             this.render()
         })
     },
-    beforeRouteEnter (to, from, next) {
-        if(from.name != 'Firmar') next('/nueva-receta')
-        else next()
-    }
 }
 </script>
 <style>
