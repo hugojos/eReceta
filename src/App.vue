@@ -6,6 +6,7 @@
         <router-view />
       </transition>
     </div>
+    <boton-whatsapp />
   </div>
 </template>
 <style>

@@ -6,7 +6,7 @@
         hide-footer
         centered>
             <template v-slot:modal-title>
-                <span class="text-muted">Solo un paso mas...</span>
+                <span class="text-muted">Solo un paso más...</span>
             </template>
             <div class="d-block text-center">
                 <h4 class="mb-2">Inicie sesión para continuar</h4>
@@ -73,9 +73,15 @@ export default {
             errorMessage: ''
         }
     },
+    computed: {
+        generarPDF (){
+            return this.$store.state.data
+        }
+    },
     methods: {
         ...mapActions(['updateDataPDF','updateData']),
         validate(){
+            this.generarPDF.firmaDigital = this.convertDataURIToBinary( this.signature_pad.toDataURL() )
             if(this.signature_pad.isEmpty()) this.$bvModal.show('modal-firma')
             else if(!this.$store.state.auth) this.$bvModal.show('modal-iniciar-sesion')
             else {
@@ -84,18 +90,15 @@ export default {
             }
         },
         enviar() {
+            console.log(this.generarPDF)
             this.loading = true
-            let data = this.$store.state.data;
-            data.firmaDigital = this.convertDataURIToBinary( this.signature_pad.toDataURL() )
-            console.log(data)
-            axios.post('http://'+properties.ip+'/nuevaReceta', data)
+            axios.post('http://'+properties.ip+'/nuevaReceta', this.generarPDF)
             .then(response => {
                 this.updateDataPDF(response.data)
                 this.$router.push('/receta')
+                console.log(response)
             })
-            .catch(error => {
-                this.errorMessage = 'No se pudo continuar con el proceso: '+ error.message
-            })
+            .catch(error => this.errorMessage = 'No se pudo continuar con el proceso: '+ error.message)
             .finally(() => this.loading = false)
         },
         convertDataURIToBinary(dataURI) {

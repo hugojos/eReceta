@@ -1,5 +1,46 @@
 <template>
     <div class="h-100 row pt-2 justify-content-center">
+        <template v-for="(medicamento, index) in seleccionados">
+            <b-modal 
+            :key="index"
+            :id="medicamento.idProductoLaboratorio" 
+            class="rounded" 
+            centered>
+                <template v-slot:modal-title>
+                    <span class="m-0 text-muted h6">Escriba la posología del medicamento</span>
+                    <p class="h6 m-0"><span>{{medicamento.nombre}}</span></p>
+                </template>
+                <div class="d-block">
+                    <textarea
+                    @input="setPosologia(medicamento, $event)"
+                    :value="medicamento.posologia"
+                    class="w-100 form-control"
+                    placeholder="Maximo 500 caracteres"
+                    rows="5"
+                    style="resize: none;"></textarea>
+                    <span class="text-muted">{{500 - (medicamento.posologia ? medicamento.posologia.length : 0)}} caracteres restantes</span>
+                </div>
+                <template v-slot:modal-footer>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-6 pl-0 text-left">
+                                <b-button @click="$bvModal.hide(medicamento.idProductoLaboratorio);medicamento.posologia = ''"
+                                variant="outline-danger"
+                                class="mr-2">
+                                    Cancelar
+                                </b-button>
+                            </div>
+                            <div class="col-6 px-0 text-right small">
+                                <b-button @click="$bvModal.hide(medicamento.idProductoLaboratorio)"
+                                variant="primary">
+                                    Aceptar
+                                </b-button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </b-modal>
+        </template>
         <div class="col-12 col-md-6 text-left">
             <span class="text-muted font-weight-bold">Datos del paciente</span>
             <form @submit="validate()" 
@@ -7,13 +48,17 @@
                 <div class="form-group row">
                     <div class="col-6 col-md-12 pr-1 pr-md-3 mb-md-3 text-left">
                         <label for="" class="font-weight-bold">Nombre</label>
-                        <form-input :model="paciente" :error="error" type="text" name="nombre" placeholder="Ingrese nombre"/>
+                        <form-input :model="paciente" :error="error" type="text" name="nombre" placeholder="Ingrese nombre" />
                     </div>
                     <div class="col-6 col-md-12 pl-1 pl-md-3 text-left">
                         <label for="" class="font-weight-bold">Apellido</label>
-                        <form-input :model="paciente" :error="error" type="text" name="apellido" placeholder="Ingrese apellido"/>
+                        <form-input :model="paciente" :error="error" type="text" name="apellido" placeholder="Ingrese apellido" />
                     </div>
                 </div>
+                <!--<div class="form-group text-left">
+                    <label for="email" class="font-weight-bold">Email <span class="text-muted small">(opcional)</span> </label>
+                    <form-input :model="paciente" :error="error" type="email" name="email" placeholder="Ingrese email"/>
+                </div>-->
                 <div class="form-group text-left">
                     <label for="" class="font-weight-bold">DNI <span class="text-muted small">(opcional)</span> </label>
                     <form-input :model="paciente" :error="error" type="number" name="dni" placeholder="Ingrese DNI"/>
@@ -57,8 +102,8 @@
                         <thead>
                             <tr class="h6 text-left">
                                 <th></th>
-                                <th style="width:80%;">Nombre</th>
-                                <th style="width:20%;">Cantidad</th>
+                                <th style="width:65%">Nombre</th>
+                                <th style="width:35%">Cantidad</th>
                             </tr>
                         </thead>
                         <tbody class="text-left">
@@ -71,18 +116,26 @@
                                         </div>
                                     </td>
                                     <td scope="row" class="small">{{medicamento.nombre}}</td>
-                                    <td>
-                                        <div class="d-flex justify-content-between">
-                                            <div @click="medicamento.cantidad != 1 ? medicamento.cantidad-- : ''" 
-                                            class="bg-purpura p-1 rounded pointer d-flex align-items-center" style="line-height: 0.5">
-                                                <font-awesome-icon icon="minus" class="small text-white" title="Restar"/>
+                                    <td class="px-2">
+                                        <div class="d-flex">
+                                            <div class="d-flex justify-content-center w-75">
+                                                <div @click="medicamento.cantidad != 1 ? medicamento.cantidad-- : ''" 
+                                                class="bg-purpura p-1 rounded pointer d-flex align-items-center" style="line-height: 0.5">
+                                                    <font-awesome-icon icon="minus" class="small text-white" title="Restar"/>
+                                                </div>
+                                                <div class="mx-2">{{medicamento.cantidad}}</div>
+                                                <div @click="medicamento.cantidad++" 
+                                                class="bg-purpura p-1 rounded pointer d-flex align-items-center" style="line-height: 0.5">
+                                                    <font-awesome-icon icon="plus" class="small text-white" title="Sumar"/>
+                                                </div>
                                             </div>
-                                            <div>{{medicamento.cantidad}}</div>
-                                            <div @click="medicamento.cantidad++" 
-                                            class="bg-purpura p-1 rounded pointer d-flex align-items-center" style="line-height: 0.5">
-                                                <font-awesome-icon icon="plus" class="small text-white" title="Sumar"/>
+                                            <div class="d-flex justify-content-center w-25">
+                                                <div @click="mostarPosologia(medicamento.idProductoLaboratorio)" 
+                                                class="bg-purpura p-1 rounded pointer d-flex align-items-center justify-content-center text-light font-weight-bolder h-100" style="line-height: 0.5">
+                                                    <span title="Escribir posología">P</span>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </div> 
                                     </td>
                                 </tr>
                             </template>
@@ -112,6 +165,7 @@ export default {
             paciente: {
                 nombre: '',
                 apellido: '',
+                email:'',
                 dni: '',
                 obraSocial: '',
                 numeroAfiliado: ''
@@ -145,14 +199,17 @@ export default {
         ...mapActions(['updateDataPDF','updateData']),
         validate(){
             this.error = {}
+            console.log(this.seleccionados)
             this.errorStatus = false
             if(this.paciente.dni.length && !(this.paciente.dni.length >= 7 && this.paciente.dni.length <= 8)) this.error.dni = 'El DNI debe tener entre 7 y 8 digitos'
             if(this.paciente.obraSocial.length && !this.paciente.numeroAfiliado.length) this.error.numeroAfiliado = 'El campo no debe estar vacio'
             if(!this.seleccionadosNoEsCero) this.error.message = 'La cantidad no puede ser 0'
             if(!this.seleccionados.length) this.error.message = '¡Debe seleccionar al menos un medicamento!'
             Object.keys(this.paciente).forEach(key => {
-                if(!this.paciente[key] && key != 'dni' && key != 'obraSocial' && key != 'numeroAfiliado')
+                if(!this.paciente[key] && key != 'dni' && key != 'obraSocial' && key != 'numeroAfiliado' && key != 'email')
                     this.$set(this.error, key, 'El campo no debe estar vacio')
+                if((key == 'nombre' || key == 'apellido') && !/^[\u00F1A-Za-z _]*[\u00F1A-Za-z][\u00F1A-Za-z _]*$/.test(this.paciente[key]))
+                    this.$set(this.error, key, 'El campo debe contener solo letras')
             })
             if(!Object.keys(this.error).length)
                 this.siguiente()
@@ -179,6 +236,14 @@ export default {
             this.updateData(data)
             this.$router.push('/firmar')
         },
+        mostarPosologia(id){
+            this.$bvModal.show(id)
+        },
+        setPosologia(model, event){
+            if(event.target.value.length > 500) event.preventDefault()
+            else this.$set(model,'posologia',event.target.value)
+            this.$forceUpdate()
+        }
     },
     mounted(){
         //Carga lista de medicamentos
@@ -189,6 +254,7 @@ export default {
         })
         .then(response => {
             this.medicamentos = response.data
+            console.log(response)
         })
         .catch(error => {
             this.errorStatus = true

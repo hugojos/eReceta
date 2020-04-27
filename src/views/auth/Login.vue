@@ -17,16 +17,6 @@ import { mapActions } from 'vuex';
 export default {
     data(){
         return {
-            user: {
-                email: '',
-                password: '',
-            },
-            error: {},
-            showPassword: false,
-            loading: false,
-            status: true,
-            alertMessage: '',
-            recordarme: false,
             version: properties.version
         }
     },

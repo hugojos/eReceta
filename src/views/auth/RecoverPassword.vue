@@ -1,10 +1,10 @@
 <template>
     <div class="row w-100 justify-content-center h-75">
-        <b-alert show variant="danger" v-show="fail">{{alertMessage}}</b-alert>
+        <b-alert show variant="danger" v-show="alertMessage">{{alertMessage}}</b-alert>
         <form 
         v-if="!success"
         @keypress.enter.prevent="validate()"
-        action="/" method="POST" class="text-left border col-12 col-md-8 col-lg-8 pt-3">
+        action="/" method="POST" class="text-left border col-12 col-lg-8 pt-3">
             <h4 class="text-center">Recuperar contraseña</h4>
             <p class="text-muted small">Por favor, indiquenos su dirrecion de correo electrónico para enviarle el enlace para reestablecer su contraseña.</p>
             <div class="form-group text-left">
@@ -31,7 +31,8 @@
                     <span class="small">¿No recibio el correo? </span>
                     <b-button 
                     @click="resend()"
-                    variant="primary">
+                    variant="primary"
+                    size="sm">
                         Reenviar
                         <b-spinner v-show="loading" 
                         small></b-spinner>
@@ -40,7 +41,8 @@
                 <b-button 
                 v-if="resendOK"
                 @click="resendOK = true"
-                variant="success">
+                variant="success"
+                size="sm">
                     ¡Reenviado!
                 </b-button>
             </div>
@@ -53,11 +55,10 @@ export default {
     data(){
         return {
             user: {
-                email: '',
+                email: ''
             },
             error: {},
             loading: false,
-            fail: false,
             success: false,
             resendOK: false,
             alertMessage: '',
@@ -67,35 +68,36 @@ export default {
         validate(){
             this.error = {}
             let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if(!re.test(this.user.email.toLowerCase()))
-                this.error.email = 'El email es invalido'
+            if(!re.test(this.user.email.toLowerCase())) this.error.email = 'El email es invalido'
             Object.keys(this.user).forEach(key => {
                 if(!this.user[key])
-                    this.$set(this.error, key, '¡El campo no debe estar vacio!')
+                    this.$set(this.error, key, 'El campo no debe estar vacio')
             })
             if(!Object.keys(this.error).length)
                 this.enviar()
         },
         enviar(){
             this.loading = true
-            this.success = true
-            this.loading = false
-            /*axios.post('http://'+properties.ip+'/erp-web/view/recetaCupon/enviar', this.user)
+            axios.post('http://'+properties.ip+'/recuperar-contrasena', this.user)
             .then(response => {
+                this.success = true
+                this.alertMessage = ''
+                console.log(response)
             })
             .catch(error => {
-                this.error = false
-                this.alertMessage = 'No se pudo continuar con el proceso: '+ error.message
+                console.dir(error)
+                this.alertMessage = 'No se pudo continuar con el proceso: ' + error.message;
+                if(error.response.data) this.alertMessage = error.response.data
             })
-            .finally(response => {
-                this.loading = false
-            })*/
+            .finally(response => this.loading = false)
         },
         resend() {
-            this.loading = true
+            this.enviar()
             this.resendOK = true
-            this.loading = false
         }
     },
+    mounted(){
+    
+    }
 }
 </script>

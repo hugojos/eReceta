@@ -1,0 +1,143 @@
+<template>
+    <header id="header-app" class="py-1 bg-purpura text-white d-flex align-items-center justify-content-center position-absolute w-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-2 d-flex justify-content-start align-items-center">
+                    <font-awesome-icon @click="toggleMenu()"
+                    icon="bars" class="pointer h3 m-0 float-right pointer" />
+                </div> 
+                <div class="col-4">
+                </div>
+                <div class="col-6 d-flex justify-content-end align-items-center">
+                    <span class="d-block mr-2 mt-1 font-weight-bolder">{{version}}</span>
+                    <img @click="$router.push('/nueva-receta')"
+                    src="img/1.jpg" style="width:27px" alt="" class="pointer">
+                </div>
+            </div>
+        </div>
+        <nav class="container-fluid position-absolute">
+            <div class="row">
+                <div :style="[$route.query.menu ? {left:0}  : styleMenu]"
+                class="menu position-absolute col-xl-3 col-lg-4 col-sm-6 col-10 bg-purpura vh-100 p-0">
+                    <div class="w-100 border-bottom row m-0 align-items-center">
+                        <div class="col-12">
+                            <div class="row align-items-center" style="min-height: 36px">
+                                <template v-if="$store.state.auth">
+                                    <div class="col-10 text-left">
+                                        <span class="font-weight-bold h4 m-0">{{$store.state.auth.nombre}}</span>
+                                    </div>
+                                    <div
+                                    @click="toggleUserMenu = !toggleUserMenu"
+                                    class="col-2 d-flex justify-content-end align-items-center">
+                                        <font-awesome-icon icon="angle-down" class="pointer h3 m-0" :rotation="toggleUserMenu ? 180 : null"  style="transition: all .3s"/> 
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    <router-link to="/iniciar-sesion" class="text-decoration-none text-white pointer col-6 d-flex align-items-center justify-content-center border-right">
+                                        <span class="h5 m-0">ACCEDER</span>
+                                    </router-link>
+                                    <router-link to="/registrarse" class="text-decoration-none text-white pointer col-6 d-flex align-items-center justify-content-center border-left">
+                                        <span class="h5 m-0">REGISTRO</span>
+                                    </router-link>
+                                </template>
+                            </div>
+                        </div>
+                        <div
+                        v-if="$store.state.auth"
+                        class="col-12" 
+                        :style="[toggleUserMenu ? '' : {height: 0},{backgroundColor:'#461093', overflow: 'hidden',transition: 'all .3s'}]">
+                            <ul class="list-unstyled pb-2 pl-4 m-0">
+                                <!--<li class="row mt-2">
+                                    <div class="col-2 text-center pr-0">
+                                        <font-awesome-icon class="h5 m-0" icon="user" />
+                                    </div>
+                                    <div class="col-10 text-left pl-1">
+                                        <span>Mis datos</span>
+                                    </div>
+                                </li>-->
+                                <li @click="logout()"
+                                class="row mt-2 pointer">
+                                    <div class="col-2 text-center pr-0">
+                                        <font-awesome-icon class="h5 m-0" icon="sign-out-alt" />
+                                    </div>
+                                    <div class="col-10 text-left pl-1">
+                                        <span>Cerrar sesión</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <ul class="text-left pl-4 pt-3 list-unstyled">
+                        <li class="row mt-2">
+                            <div class="col-2 text-center pr-0">
+                                <font-awesome-icon class="h4 m-0" icon="notes-medical" />
+                            </div>
+                            <div class="col-10 d-flex align-items-center text-left pl-0">
+                                <router-link to="/nueva-receta" class="h5 text-light m-0 text-decoration-none font-weight-bold">GENERAR RECETA</router-link>
+                            </div>
+                        </li>
+                        <!--<li class="row mt-2">
+                            <div class="col-2 text-center pr-0">
+                                <font-awesome-icon class="h4 m-0" icon="prescription-bottle" />
+                            </div>
+                            <div class="col-10 d-flex align-items-center text-left pl-0">
+                                <span class="h5">Generar farmaco</span>
+                            </div>
+                        </li>-->
+                    </ul>
+                </div>
+                <div @click="toggleMenu()" v-if="$route.query.menu"
+                class="position-absolute container-fluid fondo-oscuro bg-dark vh-100" style="top:0">
+                </div>
+            </div>
+        </nav>
+    </header>
+</template>
+<script>
+import { mapActions } from 'vuex';
+export default {
+    data(){
+        return {
+            styleMenu: {
+                left: '-100%',
+            },
+            styleArrow: {
+                transform: 'rotate(180deg)',
+            },
+            toggle: false,
+            toggleUserMenu: false,
+            version: properties.version
+        }
+    },
+    methods: {
+        ...mapActions(['updateAuth']),
+        toggleMenu(){
+            if(this.$route.query.menu) this.$router.push({query: {menu: undefined}})
+            else this.$router.push({query: {menu: true}})
+         
+        },
+        logout(){
+            this.updateAuth(false)
+            localStorage.removeItem('auth')
+            this.$router.push('/')
+        },
+    },
+}
+</script>
+<style>
+    #header-app {
+        top:0;
+        height: 36px;
+    }
+    nav {
+        top: 0;
+        z-index: 1;
+    }
+    .menu {
+        z-index: 2;
+        transition: all 0.4s;
+    }
+    .fondo-oscuro {
+       opacity: 0.5;
+    }
+</style>

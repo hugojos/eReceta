@@ -1,18 +1,17 @@
 <template>
     <div class="position-relative">
-        <input @input="setModel($event)"
-        :type="type" 
-        :class="['form-control pr-4', {'border-danger':error[name]}]" 
-        :placeholder="placeholder"
-        :maxlength="maxlength"
-        :value="model[name]">
-        <font-awesome-icon 
-        tabindex="0"
+        <select @change="setModel($event)"
+        :class="['custom-select pr-4', {'border-danger':error[name]}]" 
+        name="" id="">
+            <option value="">Seleccionar</option>
+            <option v-for="(item, index) in list" :key="index" :value="item[itemValue]">{{item[itemName]}} </option>
+        </select>
+        <font-awesome-icon
         v-show="error[name]" 
         :id="name" 
         icon="exclamation-triangle" 
         class="text-danger errorIcon position-absolute"/>
-        <b-tooltip :target="name"  placement="top">
+        <b-tooltip :target="name" placement="top">
             {{error[name]}}
         </b-tooltip>
     </div>
@@ -22,26 +21,22 @@ export default {
     props: {
         error: Object,
         model: Object,
-        name: String,
-        type: String,
-        placeholder: String,
-        maxlength: {
-            default: "false",
-            type: String
-        },
+        list: Array,
+        itemName: String,
+        itemValue: String,
+        name: String
     },
     methods: {
-        setModel(event){
+        setModel(event){ 
             this.$set(this.error, this.name, '')
             this.$set(this.model, this.name, event.target.value)
-            this.$forceUpdate()
         }
     },
 }
 </script>
-<style>
+<style scoped>
     .errorIcon {
-        right: 5px;
+        right: 25px;
         top: 10px;
         cursor: pointer;
     }

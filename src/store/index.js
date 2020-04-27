@@ -9,9 +9,6 @@ export default new Vuex.Store({
     data: {},
     auth: localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth')) : false,
   },
-  getters: {
-   
-  },
   mutations: {
     mutateDataPDF(state, value) {
       return state.dataPDF = value
@@ -29,6 +26,7 @@ export default new Vuex.Store({
       commit('mutateDataPDF', value)
     },
     updateAuth({commit}, value){
+      localStorage.setItem('auth', JSON.stringify(value))
       commit('mutateAuth', value)
     },
     updateData({commit}, value){
